@@ -1,0 +1,234 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  position: relative;
+  padding-bottom: 70px;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #74abe2 0%, #5563de 100%);
+  color: #2d3436;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  line-height: 1.6;
+  position: relative;
+  overflow: hidden;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.05) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0.05) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 4px 4px;
+  animation: animateBackground 20s linear infinite;
+  z-index: -1;
+}
+
+@keyframes animateBackground {
+  0% { transform: translateY(0) translateX(0); }
+  100% { transform: translateY(-100px) translateX(-100px); }
+}
+
+.container {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  max-width: 640px;
+  width: 100%;
+  padding: 40px;
+  text-align: center;
+  position: relative;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transform: translateY(0);
+  transition: transform 0.3s ease;
+}
+
+.container:hover {
+  transform: translateY(-5px);
+}
+
+h1 {
+  margin-bottom: 30px;
+  font-weight: 700;
+  color: #2d3436;
+  font-size: 2.2rem;
+  letter-spacing: -0.5px;
+  position: relative;
+  padding-bottom: 15px;
+}
+
+h1::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background: #5563de;
+  border-radius: 2px;
+}
+
+textarea {
+  width: 100%;
+  padding: 18px;
+  margin: 25px 0;
+  border: 2px solid rgba(224, 224, 224, 0.5);
+  border-radius: 12px;
+  resize: vertical;
+  font-size: 1.05rem;
+  font-family: inherit;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+textarea:focus {
+  border-color: #5563de;
+  outline: none;
+  box-shadow: 0 6px 20px rgba(85, 99, 222, 0.15);
+  background: white;
+}
+
+button {
+  background: linear-gradient(135deg, #5563de 0%, #74abe2 100%);
+  color: white;
+  border: none;
+  padding: 16px 40px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 15px rgba(85, 99, 222, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+button:hover {
+  box-shadow: 0 6px 25px rgba(85, 99, 222, 0.4);
+  transform: translateY(-2px);
+}
+
+button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: left 0.6s;
+}
+
+button:hover::after {
+  left: 100%;
+}
+
+.result {
+  margin-top: 30px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #5563de;
+  padding: 15px 20px;
+  background: rgba(85, 99, 222, 0.1);
+  border-radius: 8px;
+  animation: fadeIn 0.4s ease;
+  display: inline-block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 25px;
+    border-radius: 16px;
+  }
+  
+  h1 {
+    font-size: 1.8rem;
+  }
+  
+  textarea {
+    font-size: 1rem;
+    padding: 15px;
+  }
+  
+  button {
+    width: 100%;
+    padding: 14px;
+  }
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  padding: 20px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.1rem;
+  font-weight: 400;
+  z-index: 100;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(5px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.heart {
+  color: #ff4757;
+  margin: 0 6px;
+  animation: heartbeat 1.2s infinite;
+  display: inline-block;
+  font-size: 1.3em;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Add text shadow to footer */
+.footer {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes heartbeat {
+  0% { transform: scale(1); }
+  15% { transform: scale(1.2); }
+  30% { transform: scale(1); }
+  45% { transform: scale(1.15); }
+  60% { transform: scale(1); }
+}

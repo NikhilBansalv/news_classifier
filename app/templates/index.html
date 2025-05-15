@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>News Topic Classifier</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <div class="container">
+    <h1>News Topic Classifier</h1>
+    <form method="post">
+      <textarea
+        name="news_text"
+        rows="6"
+        placeholder="Paste your news headline + snippet here..."
+        required
+      ></textarea>
+      <button type="submit">Classify</button>
+    </form>
+    {% if prediction %}
+      <div class="result">
+        <strong>Predicted Category:</strong> {{ prediction }}
+      </div>
+    {% endif %}
+  </div>
+  <footer class="footer">
+    Made with <span class="heart">♥</span> by Nikhil. All rights reserved.
+  </footer>
+</body>
+</html>
