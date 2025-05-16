@@ -76,6 +76,7 @@ Raw CSVs live in `data/train.csv` and `data/test.csv`.
 ---
 
 📈 **Model Evaluation Results**
+
       Model	                  Accuracy
       Naive Bayes	              0.90
       Logistic Regression	      0.92
