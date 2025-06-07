@@ -2,24 +2,38 @@ import os
 import sys
 import joblib
 import streamlit as st
+from transformers import pipeline
 
-# Setup paths
-APP_ROOT = os.path.dirname(__file__)
-PROJECT_ROOT = os.path.abspath(os.path.join(APP_ROOT, ".."))
-SRC_ROOT = os.path.join(PROJECT_ROOT, "src")
-sys.path.append(SRC_ROOT)
+st.set_page_config(page_title="News Classifier & Summarizer", layout="centered")
+# ─── Path Setup ───────────────────────────────────────────────────────────────
+HERE    = os.path.dirname(__file__)          # NEWS_CLASSIFIER/
+SRC_DIR = os.path.join(HERE, "src")          # NEWS_CLASSIFIER/src
+sys.path.insert(0, SRC_DIR)                  # Prepend src/ to Python path
 
+# Now this import will work, pulling from src/preprocess.py
 from preprocess import preprocess_text
 
-# Load model and vectorizer
-MODELS_DIR = os.path.join(PROJECT_ROOT, "models")
+# ─── Load Vectorizer & Classifier ────────────────────────────────────────────
+MODELS_DIR      = os.path.join(HERE, "models")
 VECTORIZER_PATH = os.path.join(MODELS_DIR, "tfidf_vectorizer.pkl")
-MODEL_PATH = os.path.join(MODELS_DIR, "best_model.pkl")
+MODEL_PATH      = os.path.join(MODELS_DIR, "best_model.pkl")
 
 vectorizer = joblib.load(VECTORIZER_PATH)
-model = joblib.load(MODEL_PATH)
+model      = joblib.load(MODEL_PATH)
 
-# Label map
+# ─── Summarizer Pipeline ──────────────────────────────────────────────────────
+@st.cache_resource
+def load_summarizer():
+    return pipeline(
+        "summarization",
+        model="google/pegasus-xsum",
+        tokenizer="google/pegasus-xsum",
+        device=-1
+    )
+
+summarizer = load_summarizer()
+
+# ─── Category Map ─────────────────────────────────────────────────────────────
 category_map = {
     1: "World",
     2: "Sports",
@@ -27,25 +41,34 @@ category_map = {
     4: "Sci/Tech"
 }
 
-# Streamlit App UI
-st.set_page_config(page_title="News Topic Classifier", layout="centered")
-st.title("📰 News Topic Classification")
-st.write("Enter a news article or headline to predict its category:")
+# ─── Streamlit UI ─────────────────────────────────────────────────────────────
+# st.set_page_config(page_title="News Classifier & Summarizer", layout="centered")
+st.title("📰 News Topic Classifier & Summarizer")
 
-# Input box
-user_input = st.text_area("News Text", height=200)
+user_input = st.text_area("Enter your news headline or snippet:", height=200)
 
-if st.button("Classify"):
-    if user_input.strip() == "":
-        st.warning("Please enter some news text to classify.")
+if st.button("Classify & Summarize"):
+    if not user_input.strip():
+        st.warning("Please enter some text before proceeding.")
     else:
-        # Preprocess
+        # -- Classification --
         clean_text = preprocess_text(user_input)
-        # Vectorize
-        X = vectorizer.transform([clean_text])
-        # Predict
-        prediction_num = model.predict(X)[0]
-        prediction = category_map.get(int(prediction_num), "Unknown")
+        X_input    = vectorizer.transform([clean_text])
+        pred_num   = model.predict(X_input)[0]
+        pred_cat   = category_map.get(int(pred_num), "Unknown")
+        st.subheader(f"**Predicted Category:** {pred_cat}")
 
-        # Output
-        st.success(f"**Predicted Category:** {prediction}")
+        # -- Summarization --
+        with st.spinner("Generating summary..."):
+            try:
+                summary = summarizer(
+                    user_input,
+                    max_length=250,  # approx. 3-4 lines
+                    min_length=100,
+                    do_sample=False
+                )[0]["summary_text"]
+                st.subheader("📝 Summary")
+                st.write(summary)
+            except Exception:
+                st.info("Unable to summarize (text may be too short).")
+                st.write(user_input)
