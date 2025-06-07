@@ -27,8 +27,8 @@ model      = joblib.load(MODEL_PATH)
 def load_summarizer():
     return pipeline(
         "summarization",
-        model="facebook/bart-large-cnn",
-        tokenizer="facebook/bart-large-cnn",
+        model="sshleifer/distilbart-cnn-12-6",
+        tokenizer="sshleifer/distilbart-cnn-12-6",
         device=-1
     )
 
@@ -63,8 +63,8 @@ if st.button("Classify & Summarize"):
             try:
                 summary = summarizer(
                     user_input,
-                    max_length=60,
-                    min_length=30,
+                    max_length=200,
+                    min_length=90,
                     do_sample=False
                 )[0]["summary_text"]
                 st.subheader("📝 Summary")
