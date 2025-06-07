@@ -1,9 +1,7 @@
-streamlit==1.45.1
-scikit-learn==1.7.0
-pandas==2.3.0
-nltk==3.9.1
-joblib==1.5.1
-matplotlib==3.10.3
-seaborn==0.13.2
-transformers==4.32.1
-torch>=2.0.0
+Flask
+scikit-learn
+pandas
+nltk
+joblib
+matplotlib
+seaborn

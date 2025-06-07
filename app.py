@@ -4,16 +4,17 @@ import joblib
 import streamlit as st
 from transformers import pipeline
 
+# ─── Page config MUST come before any Streamlit commands ────────────────────
 st.set_page_config(page_title="News Classifier & Summarizer", layout="centered")
-# ─── Path Setup ───────────────────────────────────────────────────────────────
+
+# ─── Path Setup ─────────────────────────────────────────────────────────────
 HERE    = os.path.dirname(__file__)          # NEWS_CLASSIFIER/
 SRC_DIR = os.path.join(HERE, "src")          # NEWS_CLASSIFIER/src
 sys.path.insert(0, SRC_DIR)                  # Prepend src/ to Python path
 
-# Now this import will work, pulling from src/preprocess.py
-from preprocess import preprocess_text
+from preprocess import preprocess_text       # Now import works
 
-# ─── Load Vectorizer & Classifier ────────────────────────────────────────────
+# ─── Load Vectorizer & Classifier ───────────────────────────────────────────
 MODELS_DIR      = os.path.join(HERE, "models")
 VECTORIZER_PATH = os.path.join(MODELS_DIR, "tfidf_vectorizer.pkl")
 MODEL_PATH      = os.path.join(MODELS_DIR, "best_model.pkl")
@@ -26,8 +27,8 @@ model      = joblib.load(MODEL_PATH)
 def load_summarizer():
     return pipeline(
         "summarization",
-        model="google/pegasus-xsum",
-        tokenizer="google/pegasus-xsum",
+        model="facebook/bart-large-cnn",
+        tokenizer="facebook/bart-large-cnn",
         device=-1
     )
 
@@ -42,29 +43,28 @@ category_map = {
 }
 
 # ─── Streamlit UI ─────────────────────────────────────────────────────────────
-# st.set_page_config(page_title="News Classifier & Summarizer", layout="centered")
 st.title("📰 News Topic Classifier & Summarizer")
 
-user_input = st.text_area("Enter your news headline or snippet:", height=200)
+user_input = st.text_area("Enter your news text here:", height=200)
 
 if st.button("Classify & Summarize"):
     if not user_input.strip():
         st.warning("Please enter some text before proceeding.")
     else:
-        # -- Classification --
-        clean_text = preprocess_text(user_input)
-        X_input    = vectorizer.transform([clean_text])
-        pred_num   = model.predict(X_input)[0]
-        pred_cat   = category_map.get(int(pred_num), "Unknown")
+        # Classification
+        clean_text_input = preprocess_text(user_input)
+        X_input          = vectorizer.transform([clean_text_input])
+        pred_num         = model.predict(X_input)[0]
+        pred_cat         = category_map.get(int(pred_num), "Unknown")
         st.subheader(f"**Predicted Category:** {pred_cat}")
 
-        # -- Summarization --
+        # Summarization
         with st.spinner("Generating summary..."):
             try:
                 summary = summarizer(
                     user_input,
-                    max_length=250,  # approx. 3-4 lines
-                    min_length=100,
+                    max_length=60,
+                    min_length=30,
                     do_sample=False
                 )[0]["summary_text"]
                 st.subheader("📝 Summary")
