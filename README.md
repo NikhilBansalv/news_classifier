@@ -90,9 +90,8 @@ Raw CSVs live in `data/train.csv` and `data/test.csv`.
 🌐 **Running the Web App**
     Ensure models/ contains best_model.pkl & tfidf_vectorizer.pkl.
 
-    Run Flask app
+    Run Streamlit app.
     cd app
-    python app.py
-    Visit http://127.0.0.1:5000 in your browser.
+    python -m streamlit run app.py.
 
     
